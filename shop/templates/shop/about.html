@@ -1,0 +1,146 @@
+{% extends 'shop/basic.html' %}
+
+{% block title%} About Us{% endblock %}
+
+{% block body %}
+
+<style type="text/css">
+  body {
+    background: #0f001f;
+    color: #eee;
+  }
+
+  .jumbotron {
+    background: linear-gradient(135deg, #1a0033, #2a0055);
+    color: white;
+    padding: 80px 0;
+    margin-bottom: 50px;
+    border-bottom: 5px solid #ff00ff;
+    box-shadow: 0 0 40px rgba(255, 0, 255, 0.4);
+  }
+
+  .jumbotron h1 {
+    font-weight: 900;
+    text-shadow: 0 0 20px #ff00ff,
+                 0 0 40px #00ffff;
+    animation: glow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { text-shadow: 0 0 15px #ff00ff; }
+    to   { text-shadow: 0 0 35px #00ffff, 0 0 50px #ffff00; }
+  }
+
+  .jumbotron p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    max-width: 900px;
+  }
+
+  .container h2 {
+    color: #ff00ff;
+    font-weight: bold;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .container h2::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(to right, #ff00ff, #00ffff);
+    bottom: -8px;
+    left: 0;
+  }
+
+  .col-md-4 {
+    transition: all 0.4s ease;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+  }
+
+  .col-md-4:hover {
+    transform: translateY(-12px);
+    background: rgba(255, 0, 255, 0.08);
+    box-shadow: 0 0 35px rgba(0, 255, 255, 0.3);
+  }
+
+  .btn-primary {
+    background: linear-gradient(to right, #ff00ff, #00ffff);
+    border: none;
+    padding: 12px 30px;
+    font-weight: bold;
+    transition: all 0.3s;
+  }
+
+  .btn-primary:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 30px #ffff00;
+    background: linear-gradient(to right, #00ffff, #ffff00);
+  }
+
+  .btn-secondary {
+    border: 2px solid #00ffff;
+    color: #00ffff;
+    transition: all 0.3s;
+  }
+
+  .btn-secondary:hover {
+    background: #00ffff;
+    color: #1a0033;
+    box-shadow: 0 0 20px #00ffff;
+  }
+
+  hr {
+    border-top: 2px solid #ff00ff;
+    opacity: 0.3;
+  }
+</style>
+
+<main role="main">
+
+  <!-- Main jumbotron -->
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-3">My Awesome Cart!</h1>
+      <p>My Awesome Cart Pvt Ltd. is an Indian electronic commerce company based in Bengaluru, India. Founded by Sachin Bansal and Binny Bansal in 2007, the company initially focused on book sales, before expanding into other product categories such as consumer electronics, fashion, and lifestyle products.
+
+The service competes primarily with Amazon's Indian subsidiary, and the domestic rival Snapdeal. As of March 2017, Flipkart held a 39.5% market share of India's e-commerce industry. Flipkart is significantly dominant in the sale of apparel, and was described as being "neck and neck" with Amazon in the sale of electronics and mobile phones. Flipkart also owns PhonePe, a mobile payments service based on the Unified Payments Interface (UPI).
+
+In August 2018, U.S.-based retail chain Walmart acquired a 77% controlling stake in Flipkart for US$16 billion, valuing it at $22 billion.</p>
+      
+      <p>
+        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h2>Our Story</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
+        <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+      </div>
+      
+      <div class="col-md-4">
+        <h2>Our Mission</h2>
+        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
+        <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+      </div>
+      
+      <div class="col-md-4">
+        <h2>Why Choose Us</h2>
+        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+      </div>
+    </div>
+
+    <hr>
+  </div>
+
+</main>
+
+{% endblock %}

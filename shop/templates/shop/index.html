@@ -1,0 +1,204 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}Shop — My Awesome Cart{% endblock %}
+
+{% block body %}
+{% load static %}
+
+<style>
+  :root {
+    --bg:        #faf8f4;
+    --surface:   #ffffff;
+    --border:    #e8e2d9;
+    --ink:       #1c1a17;
+    --ink-soft:  #6b6459;
+    --amber:     #c8873a;
+    --amber-lt:  #e8b97a;
+    --amber-dim: rgba(200,135,58,0.10);
+    --red:       #d95c3a;
+    --radius:    12px;
+    --font-serif:'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Jost', system-ui, sans-serif;
+    --shadow:    0 2px 16px rgba(28,26,23,0.07);
+  }
+
+  body { background: var(--bg); font-family: var(--font-sans); font-weight: 300; color: var(--ink); }
+
+  .shop-wrapper { max-width: 1200px; margin: 0 auto; padding: 48px 28px 88px; }
+  .category-section { margin-bottom: 56px; }
+
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 16px; }
+  .section-title-wrap { display: flex; flex-direction: column; gap: 3px; }
+  .section-eyebrow { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); }
+  .section-title { font-family: var(--font-serif); font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; color: var(--ink); line-height: 1.15; }
+  .section-divider { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); margin: 0 20px; }
+
+  .carousel-nav { display: flex; gap: 8px; }
+  .carousel-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; text-decoration: none; transition: all 0.2s; box-shadow: var(--shadow);
+  }
+  .carousel-btn:hover { border-color: var(--amber); color: var(--amber); text-decoration: none; }
+  .carousel-btn svg { width: 14px; height: 14px; }
+
+  .product-slide-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .product-slide-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px)  { .product-slide-grid { grid-template-columns: 1fr; } }
+
+  .carousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: 20px; list-style: none; padding: 0; }
+  .carousel-dots li { width: 6px; height: 6px; border-radius: 99px; background: var(--border); cursor: pointer; transition: all 0.2s; }
+  .carousel-dots li.active { width: 20px; background: var(--amber); }
+
+  .product-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow);
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.2s;
+  }
+  .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 36px rgba(28,26,23,0.11); border-color: var(--amber-lt); }
+
+  .product-card__img-wrap { position: relative; background: #f0ebe3; aspect-ratio: 1/1; overflow: hidden; }
+  .product-card__img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+  .product-card:hover .product-card__img-wrap img { transform: scale(1.05); }
+
+  .flash-badge {
+    position: absolute; top: 10px; left: 10px;
+    background: var(--red); color: #fff;
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 99px;
+  }
+
+  .product-card__body { padding: 16px 18px 20px; display: flex; flex-direction: column; flex: 1; gap: 6px; }
+  .product-card__name { font-family: var(--font-serif); font-size: 1.1rem; font-weight: 700; color: var(--ink); line-height: 1.2; }
+  .product-card__price { font-size: 0.9rem; font-weight: 600; color: var(--amber); }
+  .product-card__desc { font-size: 0.8rem; color: var(--ink-soft); line-height: 1.55; flex: 1; margin-bottom: 6px; }
+  .product-card__actions { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+
+  .btn-card {
+    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 8px 12px; border-radius: 7px; border: 1px solid transparent;
+    cursor: pointer; text-decoration: none; transition: all 0.18s; white-space: nowrap;
+  }
+  .btn-card-primary { background: var(--amber); color: #fff; border-color: var(--amber); }
+  .btn-card-primary:hover { background: var(--amber-lt); border-color: var(--amber-lt); color: #fff; text-decoration: none; }
+  .btn-card-ghost { background: transparent; color: var(--ink-soft); border-color: var(--border); }
+  .btn-card-ghost:hover { border-color: var(--amber); color: var(--amber); text-decoration: none; }
+
+  .qty-controls { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; flex: 1; }
+  .qty-controls a {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; text-decoration: none; color: var(--ink-soft);
+    background: var(--bg); font-size: 1rem; font-weight: 500; transition: background 0.15s, color 0.15s;
+  }
+  .qty-controls a:hover { background: var(--amber-dim); color: var(--amber); }
+  .qty-controls .qty-num {
+    flex: 1; text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--ink);
+    background: var(--surface); height: 34px; display: flex; align-items: center; justify-content: center;
+    border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+  }
+</style>
+
+<div class="shop-wrapper">
+  {% for product, range, nSlides in allProds %}
+
+  <div class="category-section">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="section-eyebrow">Flash Sale</span>
+        <h2 class="section-title">{{ product.0.category }}</h2>
+      </div>
+      <div class="section-divider"></div>
+      <div class="carousel-nav">
+        <a class="carousel-btn" href="#carousel-{{ forloop.counter }}" data-slide="prev" role="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        <a class="carousel-btn" href="#carousel-{{ forloop.counter }}" data-slide="next" role="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div id="carousel-{{ forloop.counter }}" class="carousel slide" data-ride="carousel">
+      <ul class="carousel-dots">
+        <li class="active" data-target="#carousel-{{ forloop.counter }}" data-slide-to="0"></li>
+        {% for i in range %}
+        <li data-target="#carousel-{{ forloop.counter }}" data-slide-to="{{ i }}"></li>
+        {% endfor %}
+      </ul>
+
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="product-slide-grid">
+
+          {% for i in product %}
+            <div class="product-card">
+              <div class="product-card__img-wrap">
+                <img src="/media/{{ i.image }}" alt="{{ i.product_name }}">
+                <span class="flash-badge">Sale</span>
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__name" id="namepr{{ i.id }}">{{ i.product_name }}</div>
+                <div class="product-card__price" id="pricepr{{ i.id }}">₹{{ i.price }}</div>
+                <p class="product-card__desc">{{ i.desc|slice:"0:60" }}…</p>
+                <div class="product-card__actions">
+                  {% if i.cart %}
+                    <div class="qty-controls" id="divpr{{ i.id }}">
+                      <a href="/shop/update_cart/{{ i.id }}/minus">−</a>
+                      <span class="qty-num">{{ i.qty }}</span>
+                      <a href="/shop/update_cart/{{ i.id }}/plus">+</a>
+                    </div>
+                  {% else %}
+                    <span id="divpr{{ i.id }}" style="flex:1;display:flex;">
+                      <a href="{% url 'shop:add_cart' i.id %}" class="btn-card btn-card-primary" style="flex:1">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        Add to Cart
+                      </a>
+                    </span>
+                  {% endif %}
+                  <a href="/shop/products/{{ i.id }}" class="btn-card btn-card-ghost">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Quick View
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+          </div></div><div class="carousel-item"><div class="product-slide-grid">
+            {% endif %}
+          {% endfor %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+  $(function () {
+    var popStr = "<div id='cart-pop'></div><a href='/shop/checkout'><button class='btn btn-sm btn-warning mt-2 w-100'>Checkout</button></a>";
+    document.getElementById('popcart').setAttribute('data-content', popStr);
+    $('#popcart').popover({ html: true });
+
+    $('.carousel').on('slide.bs.carousel', function (e) {
+      var idx = $(e.relatedTarget).index();
+      $(this).closest('.category-section').find('.carousel-dots li')
+        .removeClass('active').eq(idx).addClass('active');
+    });
+
+    $('.carousel-dots li').on('click', function () {
+      var idx = $(this).index();
+      $(this).closest('.category-section').find('.carousel').carousel(idx);
+    });
+  });
+</script>
+{% endblock %}

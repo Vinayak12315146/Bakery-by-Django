@@ -1,0 +1,326 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <style>
+      /* ── Design tokens ── */
+      :root {
+        --bg:          #faf8f4;
+        --surface:     #ffffff;
+        --border:      #e8e2d9;
+        --ink:         #1c1a17;
+        --ink-soft:    #6b6459;
+        --amber:       #c8873a;
+        --amber-lt:    #e8b97a;
+        --amber-dim:   rgba(200,135,58,0.10);
+        --nav-bg:      #18160f;
+        --nav-border:  #2d2a20;
+        --radius:      10px;
+        --font-serif:  'Cormorant Garamond', Georgia, serif;
+        --font-sans:   'Jost', system-ui, sans-serif;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+
+      html, body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-sans);
+        font-weight: 300;
+        margin: 0; padding: 0;
+      }
+
+      /* ══════════════════════════════
+         NAVBAR
+      ══════════════════════════════ */
+      .main-nav {
+        background: var(--nav-bg) !important;
+        border-bottom: 1px solid var(--nav-border);
+        padding: 0 28px;
+        min-height: 64px;
+      }
+
+      /* Brand */
+      .main-nav .navbar-brand {
+        font-family: var(--font-serif);
+        font-size: 1.45rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #fff !important;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0;
+        line-height: 1;
+      }
+
+      .main-nav .navbar-brand::before {
+        content: "✦";
+        color: var(--amber);
+        font-size: 0.9rem;
+      }
+
+      /* Nav links */
+      .main-nav .nav-link {
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.65) !important;
+        padding: 8px 14px !important;
+        border-radius: 6px;
+        transition: color 0.2s, background 0.2s;
+        position: relative;
+      }
+
+      .main-nav .nav-link:hover,
+      .main-nav .nav-item.active .nav-link {
+        color: #fff !important;
+        background: rgba(255,255,255,0.06);
+      }
+
+      /* Search */
+      .nav-search-form {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: border-color 0.2s;
+        margin-right: 16px;
+      }
+
+      .nav-search-form:focus-within {
+        border-color: var(--amber);
+        background: rgba(255,255,255,0.10);
+      }
+
+      .nav-search-form input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #fff;
+        font-family: var(--font-sans);
+        font-size: 0.82rem;
+        font-weight: 400;
+        padding: 8px 14px;
+        width: 200px;
+      }
+
+      .nav-search-form input::placeholder { color: rgba(255,255,255,0.38); }
+
+      .nav-search-form button {
+        background: transparent;
+        border: none;
+        border-left: 1px solid rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.55);
+        padding: 8px 14px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-search-form button:hover { color: var(--amber-lt); }
+
+      /* Auth buttons */
+      .nav-auth {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-nav {
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 7px 18px;
+        border-radius: 7px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-nav-ghost {
+        color: rgba(255,255,255,0.7);
+        border-color: rgba(255,255,255,0.18);
+        background: transparent;
+      }
+      .btn-nav-ghost:hover {
+        color: #fff;
+        border-color: rgba(255,255,255,0.4);
+        background: rgba(255,255,255,0.06);
+        text-decoration: none;
+      }
+
+      .btn-nav-amber {
+        color: var(--nav-bg);
+        background: var(--amber);
+        border-color: var(--amber);
+      }
+      .btn-nav-amber:hover {
+        background: var(--amber-lt);
+        border-color: var(--amber-lt);
+        color: var(--nav-bg);
+        text-decoration: none;
+      }
+
+      .btn-nav-danger {
+        color: #e87070;
+        border-color: rgba(232,112,112,0.3);
+        background: transparent;
+      }
+      .btn-nav-danger:hover {
+        color: #fff;
+        background: rgba(232,112,112,0.18);
+        border-color: rgba(232,112,112,0.5);
+        text-decoration: none;
+      }
+
+      /* Cart button */
+      .btn-cart {
+        background: rgba(200,135,58,0.12);
+        border: 1px solid rgba(200,135,58,0.35);
+        color: var(--amber-lt);
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 7px 18px;
+        border-radius: 7px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn-cart:hover {
+        background: rgba(200,135,58,0.22);
+        border-color: var(--amber);
+        color: #fff;
+      }
+
+      .cart-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--amber);
+        color: var(--nav-bg);
+        font-size: 0.68rem;
+        font-weight: 700;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 99px;
+        padding: 0 5px;
+      }
+
+      /* Toggler */
+      .navbar-toggler {
+        border-color: rgba(255,255,255,0.2) !important;
+        padding: 6px 10px;
+      }
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.7)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+      }
+
+      /* ── Page content ── */
+      {% block css %}{% endblock %}
+    </style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-lg main-nav">
+
+      <a class="navbar-brand" href="/shop/">Online Bakery Shop</a>
+
+      <button class="navbar-toggler" type="button"
+              data-toggle="collapse" data-target="#navbarMain"
+              aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+
+        <!-- Left links -->
+        <ul class="navbar-nav mr-auto align-items-lg-center" style="gap:2px">
+          <li class="nav-item active">
+            <a class="nav-link" href="/shop/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/shop/contact">Contact Us</a>
+          </li>
+        </ul>
+
+        <!-- Search -->
+        <form class="nav-search-form my-2 my-lg-0" method="get" action="{% url 'shop:search' %}">
+          <input type="search" name="q" placeholder="Search products…" autocomplete="off">
+          <button type="submit" aria-label="Search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </button>
+        </form>
+
+        <!-- Auth + Cart -->
+        <div class="nav-auth ml-2">
+          <a href="#" class="btn-nav btn-nav-ghost">Login</a>
+          <a href="#" class="btn-nav btn-nav-amber">Sign Up</a>
+          <a href="#" class="btn-nav btn-nav-danger">Logout</a>
+
+          <button type="button" class="btn-cart ml-1"
+                  id="popcart"
+                  data-container="body"
+                  data-toggle="popover"
+                  data-placement="bottom"
+                  data-html="true"
+                  data-content="Your cart is empty.">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            Cart
+            <span class="cart-badge" id="cart">0</span>
+          </button>
+        </div>
+
+      </div>
+    </nav>
+
+    {% block body %}{% endblock %}
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+    <script>
+      // Init popovers
+      $(function () { $('[data-toggle="popover"]').popover(); });
+    </script>
+
+    {% block js %}{% endblock %}
+  </body>
+</html>

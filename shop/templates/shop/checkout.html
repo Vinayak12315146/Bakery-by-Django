@@ -1,0 +1,337 @@
+{% extends 'shop/basic.html' %}
+{% block title %} Checkout - My Awesome Cart {% endblock %}
+{% block body %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1916;
+    --surface2: #222119;
+    --border: #2e2c27;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --gold-dim: rgba(201, 168, 76, 0.12);
+    --text: #f0ead8;
+    --text-muted: #8a8472;
+    --red: #e05c5c;
+    --green: #5cb88a;
+    --radius: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* ── Page wrapper ── */
+  .checkout-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Section heading ── */
+  .step-label {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    color: var(--gold-light);
+    letter-spacing: 0.01em;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .step-label::before {
+    content: attr(data-step);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  /* ── Success banner ── */
+  .success-banner {
+    background: rgba(92, 184, 138, 0.1);
+    border: 1px solid rgba(92, 184, 138, 0.4);
+    border-radius: var(--radius);
+    padding: 32px 40px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .success-banner h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--green);
+    letter-spacing: 0.01em;
+  }
+
+  /* ── Cart section ── */
+  .cart-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .cart-section table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .cart-section thead tr {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cart-section thead th {
+    padding: 14px 20px;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-align: left;
+  }
+
+  .cart-section tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s ease;
+  }
+  .cart-section tbody tr:last-child { border-bottom: none; }
+  .cart-section tbody tr:hover { background: var(--gold-dim); }
+
+  .cart-section tbody th,
+  .cart-section tbody td {
+    padding: 14px 20px;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+
+  .cart-section tbody th[scope="row"] {
+    color: var(--text-muted);
+    font-weight: 400;
+    width: 48px;
+  }
+
+  /* total row */
+  .total-row th {
+    padding: 16px 20px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+  }
+  .total-row th:last-child {
+    color: var(--gold-light);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-align: right;
+  }
+
+  /* ── Address section ── */
+  .address-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 40px;
+  }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
+
+  .form-grid-3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 600px) { .form-grid-3 { grid-template-columns: 1fr; } }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .form-grid-2 .form-group,
+  .form-grid-3 .form-group { margin-bottom: 0; }
+
+  label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="name"] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    padding: 11px 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    width: 100%;
+  }
+  input::placeholder { color: var(--text-muted); opacity: 0.6; }
+  input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-dim);
+  }
+
+  /* ── Submit button ── */
+  .btn-checkout {
+    margin-top: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--gold);
+    color: #0f0e0c;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-checkout:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+  .btn-checkout:active { transform: translateY(0); }
+  .btn-checkout svg { width: 16px; height: 16px; }
+
+  /* ── Divider ── */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+</style>
+
+<div class="checkout-wrapper">
+
+  <!-- ── Step 1: Cart Review ── -->
+  <h2 class="step-label" data-step="1">Review Your Cart Items</h2>
+
+  {% if thank %}
+    <div class="success-banner">
+      <h1>✓ Order Placed Successfully</h1>
+    </div>
+  {% else %}
+    <div class="cart-section">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if data %}
+            {% for i in data %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ i.product_name }}</td>
+                <td>{{ i.qty }}</td>
+                <td>₹{{ i.price }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+          <tr class="total-row">
+            <th></th><th></th><th></th>
+            <th>Total: ₹{{ total }}</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+  <div class="section-divider"></div>
+
+  <!-- ── Step 2: Address ── -->
+  <h2 class="step-label" data-step="2">Enter Address &amp; Details</h2>
+
+  <div class="address-section">
+    <form method="post" action="/shop/checkout/">
+      {% csrf_token %}
+      <input type="hidden" name="itemsjson" id="itemsjson">
+
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" placeholder="you@example.com">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:20px">
+        <label for="address1">Address Line 1</label>
+        <input type="text" name="address1" id="address1" placeholder="1234 Main St">
+      </div>
+
+      <div class="form-group">
+        <label for="address2">Address Line 2</label>
+        <input type="text" name="address2" id="address2" placeholder="Apartment, studio, or floor">
+      </div>
+
+      <div class="form-grid-3">
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" name="city" id="city" placeholder="City">
+        </div>
+        <div class="form-group">
+          <label for="state">State</label>
+          <input type="text" name="state" id="state" placeholder="State">
+        </div>
+        <div class="form-group">
+          <label for="zip_code">ZIP Code</label>
+          <input type="text" name="zip_code" id="zip_code" placeholder="000000">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:20px">
+        <label for="phone">Phone Number</label>
+        <input type="tel" name="phone" id="phone" placeholder="+91 00000 00000">
+      </div>
+
+      <button type="submit" class="btn-checkout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        Place Order
+      </button>
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}
